@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Weather Dashboard</title>
+
+    <style>
+
+       
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body { font-family: Arial, sans-serif; background: #f0f2f5; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+       
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        
+
+        <div class="theme-toggle">
+
+            <button id="themeBtn">🌙 Dark</button>
+
+        </div>
+
+
+
+        
+
+        <div class="search-section">
+
+            <input type="text" id="cityInput" placeholder="Enter city name..." />
+
+            <button id="searchBtn">Search Weather</button>
+
+        </div>
+
+
+
+       
+
+        <div id="weatherCard" class="weather-card" style="display: none;"></div>
+
+        
+
+       
+
+        <div id="errorMsg" class="error" style="display: none;"></div>
+
+
+
+        
+
+        <div class="favorites-section">
+
+            <h3>Favorites</h3>
+
+            <div id="favoritesList"></div>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+       
+
+        const API_KEY = 'da0e7a0836e0cfc675c7972a1520e40b';
+
+
+
+        
+
+        async function getWeather(city) {
+
+            try{
+                //risky code
+                let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`);
+                let data = await response.json();
+                return data;
+            }
+            catch(error){
+                console.error('Error fetching weather data:', error);
+                throw error;
+            }
+
+            
+
+        }
+
+
+
+        
+
+        async function addFavorite(city) {
+            let favorites = JSON.parse(localStorage.getItem("favorites"))??[];//"favorites" is the key value in localstorage
+            if(favorites.includes(city)){
+                console.log("Already exists")
+            }
+            else{
+                favorites.push(city);
+                let fav = JSON.stringify(favorites);
+                localStorage.setItem("favorites", fav);
+            }
+           
+
+        }
+
+
+
+        
+
+        function loadFavorites() {
+            let fav1 = JSON.parse(localStorage.getItem("favorites"))??[];
+
+            let favlist = document.getElementById("favoritesList");
+
+            favlist.innerHTML = ""; 
+            for(let value of fav1){
+                favlist.innerHTML += `${value}<br>`;
+            }
+
+            
+
+        }
+
+
+
+        
+
+        async function searchWeather(city) {
+
+            try{
+
+            document.getElementById("errorMsg").style.display = "none";
+            
+            let loading = document.getElementById("weatherCard")
+            loading.style.display = "block";
+            loading.textContent = "Loading...";
+
+            let weather = await getWeather(city);
+            loading.innerHTML = `<h2>${weather.name}</h2>
+            <p>Temperature: ${weather.main.temp} °C</p>
+            <p>Weather: ${weather.weather[0].description}</p>`
+            }
+            
+            catch(error){
+                let errorMsg = document.getElementById("errorMsg");
+                errorMsg.style.display = "block";
+                errorMsg.textContent = "City not found";
+
+                console.log(error)
+                throw error;
+            }
+
+            
+
+        }
+
+
+
+       
+
+        let clock;
+
+        function debounceSearch() {
+
+            clearTimeout(clock);
+
+            clock = setTimeout(()=>{
+                searchWeather(document.getElementById("cityInput").value);
+            },500);
+            
+
+        };
+
+
+
+       
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById("searchBtn").addEventListener("click", function() {
+                let city = document.getElementById("cityInput").value;
+                searchWeather(city);
+            });
+        
+        let themeBtn = document.getElementById("themeBtn");
+        themeBtn.addEventListener("click",function(){
+
+            if(document.body.style.backgroundColor === "black"){
+
+                document.body.style.backgroundColor = "white";
+                document.body.style.color = "black";
+                themeBtn.textContent = "🌙 Dark";
+            }
+            else{
+                document.body.style.backgroundColor = "black";
+                document.body.style.color = "white";
+                themeBtn.textContent = "☀️ Light";
+            }
+        })
+            
+
+            loadFavorites();
+
+        });
+
+
+
+        
+
+        window.searchWeather = searchWeather;
+
+        window.addFavorite = addFavorite;
+
+
+
+        
+    </script>
+
+</body>
+
+</html>
