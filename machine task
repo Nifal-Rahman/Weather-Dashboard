@@ -12,7 +12,7 @@
 
     <style>
 
-       
+        /* Interns: Add your CSS here */
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -20,7 +20,7 @@
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-       
+        /* Add more styles... */
 
     </style>
 
@@ -30,7 +30,7 @@
 
     <div class="container">
 
-        
+        <!-- Theme Toggle -->
 
         <div class="theme-toggle">
 
@@ -40,7 +40,7 @@
 
 
 
-        
+        <!-- Search Section -->
 
         <div class="search-section">
 
@@ -52,19 +52,19 @@
 
 
 
-       
+        <!-- Weather Display -->
 
         <div id="weatherCard" class="weather-card" style="display: none;"></div>
 
         
 
-       
+        <!-- Error Message -->
 
         <div id="errorMsg" class="error" style="display: none;"></div>
 
 
 
-        
+        <!-- Favorites -->
 
         <div class="favorites-section">
 
@@ -80,13 +80,13 @@
 
     <script>
 
-       
+        // REPLACE THIS with your OpenWeatherMap API key (FREE signup)
 
         const API_KEY = 'da0e7a0836e0cfc675c7972a1520e40b';
 
 
 
-        
+        // 1. IMPLEMENT getWeather(city) - Fetch API + async/await
 
         async function getWeather(city) {
 
@@ -101,13 +101,13 @@
                 throw error;
             }
 
-            
+            // TODO: Complete this function
 
         }
 
 
 
-        
+        // 2. IMPLEMENT addFavorite(city)
 
         async function addFavorite(city) {
             let favorites = JSON.parse(localStorage.getItem("favorites"))??[];//"favorites" is the key value in localstorage
@@ -119,31 +119,32 @@
                 let fav = JSON.stringify(favorites);
                 localStorage.setItem("favorites", fav);
             }
-           
+            // TODO: localStorage
+            // + check duplicates
 
         }
 
 
 
-        
+        // 3. IMPLEMENT loadFavorites()
 
         function loadFavorites() {
             let fav1 = JSON.parse(localStorage.getItem("favorites"))??[];
 
             let favlist = document.getElementById("favoritesList");
 
-            favlist.innerHTML = ""; 
+            favlist.innerHTML = ""; // Clear existing favorites
             for(let value of fav1){
                 favlist.innerHTML += `${value}<br>`;
             }
 
-            
+            // TODO: Display favorites from localStorage
 
         }
 
 
 
-        
+        // 4. IMPLEMENT searchWeather()
 
         async function searchWeather(city) {
 
@@ -170,13 +171,13 @@
                 throw error;
             }
 
-            
+            // TODO: Show loading, call getWeather, handle errors
 
         }
 
 
 
-       
+        // 5. IMPLEMENT debounceSearch()
 
         let clock;
 
@@ -185,15 +186,15 @@
             clearTimeout(clock);
 
             clock = setTimeout(()=>{
-                searchWeather(document.getElementById("cityInput").value);
+                searchWeather(document.getElementById("cityInput").value);//.value: give me the current text inside the input box.
             },500);
-            
+            // TODO: 500ms delay for search input
 
         };
 
 
 
-       
+        // 6. Event Listeners (wire up buttons/inputs)
 
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById("searchBtn").addEventListener("click", function() {
@@ -216,7 +217,7 @@
                 themeBtn.textContent = "☀️ Light";
             }
         })
-            
+            // TODO: Add your event listeners here
 
             loadFavorites();
 
@@ -224,7 +225,7 @@
 
 
 
-        
+        // Export functions for button onclick (temporary)
 
         window.searchWeather = searchWeather;
 
@@ -232,8 +233,15 @@
 
 
 
-        
+        // //temp
+        // getWeather("Kozhikode")
+        // .then(data => console.log(data))
+        // .catch(error => console.log(error));
     </script>
+
+</body>
+
+</html>
 
 </body>
 
